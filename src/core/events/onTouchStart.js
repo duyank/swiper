@@ -1,10 +1,9 @@
-import { getWindow, getDocument } from 'ssr-window';
 import { now } from '../../shared/utils.js';
 
 // Modified from https://stackoverflow.com/questions/54520554/custom-element-getrootnode-closest-function-crossing-multiple-parent-shadowd
-function closestElement(selector, base = this) {
+function closestElement(window, selector, base = this) {
   function __closestFrom(el) {
-    if (!el || el === getDocument() || el === getWindow()) return null;
+    if (!el || el === window.document || el === window) return null;
     if (el.assignedSlot) el = el.assignedSlot;
     const found = el.closest(selector);
     if (!found && !el.getRootNode) {
@@ -17,8 +16,8 @@ function closestElement(selector, base = this) {
 
 export default function onTouchStart(event) {
   const swiper = this;
-  const document = getDocument();
-  const window = getWindow();
+  const { window } = swiper.params;
+  const { document } = window;
 
   const data = swiper.touchEventsData;
   data.evCache.push(event);
@@ -60,7 +59,7 @@ export default function onTouchStart(event) {
   if (
     params.noSwiping &&
     (isTargetShadow
-      ? closestElement(noSwipingSelector, targetEl)
+      ? closestElement(window, noSwipingSelector, targetEl)
       : targetEl.closest(noSwipingSelector))
   ) {
     swiper.allowClick = true;

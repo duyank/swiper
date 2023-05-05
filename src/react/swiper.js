@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, forwardRef } from 'react';
-import SwiperCore from 'swiper';
+import SwiperCore from '../core/core.js';
 import { getParams } from '../components-shared/get-params.js';
 import { mountSwiper } from '../components-shared/mount-swiper.js';
 import {
@@ -26,6 +26,7 @@ const Swiper = forwardRef(
       wrapperTag: WrapperTag = 'div',
       children,
       onSwiper,
+      window,
       ...rest
     } = {},
     externalElRef,
@@ -63,7 +64,7 @@ const Swiper = forwardRef(
       // init swiper
       Object.assign(swiperParams.on, events);
       eventsAssigned = true;
-      const passParams = { ...swiperParams };
+      const passParams = { window, ...swiperParams };
       delete passParams.wrapperClass;
       swiperRef.current = new SwiperCore(passParams);
       if (swiperRef.current.virtual && swiperRef.current.params.virtual.enabled) {

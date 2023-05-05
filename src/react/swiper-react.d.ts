@@ -9,6 +9,7 @@ interface SwiperProps extends SwiperOptions {
    * @default 'div'
    */
   tag?: string;
+  window?: Window;
 
   /**
    * Swiper wrapper tag

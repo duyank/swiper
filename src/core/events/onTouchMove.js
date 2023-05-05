@@ -1,9 +1,10 @@
-import { getDocument } from 'ssr-window';
 import { now } from '../../shared/utils.js';
 
 export default function onTouchMove(event) {
-  const document = getDocument();
   const swiper = this;
+  const {
+    window: { document },
+  } = swiper.params;
   const data = swiper.touchEventsData;
   const { params, touches, rtlTranslate: rtl, enabled } = swiper;
   if (!enabled) return;

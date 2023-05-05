@@ -1,5 +1,3 @@
-import { getDocument } from 'ssr-window';
-
 import onTouchStart from './onTouchStart.js';
 import onTouchMove from './onTouchMove.js';
 import onTouchEnd from './onTouchEnd.js';
@@ -12,12 +10,13 @@ let dummyEventAttached = false;
 function dummyEventListener() {}
 
 const events = (swiper, method) => {
-  const document = getDocument();
   const { params, el, wrapperEl, device } = swiper;
   const capture = !!params.nested;
   const domMethod = method === 'on' ? 'addEventListener' : 'removeEventListener';
   const swiperMethod = method;
-
+  const {
+    window: { document },
+  } = params;
   // Touch Events
   el[domMethod]('pointerdown', swiper.onTouchStart, { passive: false });
   document[domMethod]('pointermove', swiper.onTouchMove, { passive: false, capture });
@@ -25,6 +24,8 @@ const events = (swiper, method) => {
   document[domMethod]('pointercancel', swiper.onTouchEnd, { passive: true });
   document[domMethod]('pointerout', swiper.onTouchEnd, { passive: true });
   document[domMethod]('pointerleave', swiper.onTouchEnd, { passive: true });
+  window[domMethod]('mouseout', swiper.onTouchEnd, { passive: true });
+  window[domMethod]('mouseover', swiper.onTouchEnd, { passive: true });
 
   // Prevent Links Clicks
   if (params.preventClicks || params.preventClicksPropagation) {
@@ -53,7 +54,6 @@ const events = (swiper, method) => {
 
 function attachEvents() {
   const swiper = this;
-  const document = getDocument();
   const { params } = swiper;
 
   swiper.onTouchStart = onTouchStart.bind(swiper);
@@ -68,7 +68,7 @@ function attachEvents() {
   swiper.onLoad = onLoad.bind(swiper);
 
   if (!dummyEventAttached) {
-    document.addEventListener('touchstart', dummyEventListener);
+    params.window.document.addEventListener('touchstart', dummyEventListener);
     dummyEventAttached = true;
   }
 
