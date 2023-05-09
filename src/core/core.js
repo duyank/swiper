@@ -1,4 +1,5 @@
 /* eslint no-param-reassign: "off" */
+import { getWindow } from 'ssr-window';
 import {
   extend,
   deleteProps,
@@ -65,11 +66,13 @@ class Swiper {
     params = extend({}, params);
     if (el && !params.el) params.el = el;
 
-    let doc = window.document;
+    const w = getWindow();
+    let doc;
     if (params.window) {
       doc = params.window.document;
     } else {
-      params.window = window;
+      params.window = w;
+      doc = w.document;
     }
     if (params.el && typeof params.el === 'string' && doc.querySelectorAll(params.el).length > 1) {
       const swipers = [];
